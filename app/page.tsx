@@ -15,11 +15,11 @@ export default function Page() {
           <p
             className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}
           >
-            <strong>Welcome to Acme.</strong> This is the example for the{' '}
-            <a href="https://nextjs.org/learn/" className="text-blue-500">
+            <strong>欢迎来到Acme，</strong>这是一项软件工程实例，其功能是提供一个简单的财务管理系统，用于跟踪开支和转账。
+            {/* <a href="https://nextjs.org/learn/" className="text-blue-500">
               Next.js Learn Course
-            </a>
-            , brought to you by Vercel.
+            </a> */}
+            由 2022270098 制作呈现。
           </p>
           <Link
             href="/login"
