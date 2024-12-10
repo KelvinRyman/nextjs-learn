@@ -1,10 +1,10 @@
 import { fetchCustomers } from '@/app/lib/data';
-import Form from '@/app/ui/invoices/create-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Form from '@/app/ui/customers/create-form';
+import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Create Invoice',
+  title: 'Create Customer',
 };
 
 export default async function Page() {
@@ -14,10 +14,10 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: '开支', href: '/dashboard/invoices' },
+          { label: '转账', href: '/dashboard/customers' },
           {
-            label: '创建开支',
-            href: '/dashboard/invoices/create',
+            label: '创建对象',
+            href: '/dashboard/customers/create',
             active: true,
           },
         ]}

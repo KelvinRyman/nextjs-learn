@@ -26,7 +26,7 @@ export default async function Page(props: {
         转账
       </h1>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="搜索客户..." />
+        <Search placeholder="搜索对象..." />
         <CreateCustomer />
       </div>
       <CustomersTable customers={customers} />

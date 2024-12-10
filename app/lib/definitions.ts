@@ -86,3 +86,17 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export type SettingField = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type Device = {
+  id: number;
+  user_id: string;
+  device_name: string;
+  last_login: string;
+};

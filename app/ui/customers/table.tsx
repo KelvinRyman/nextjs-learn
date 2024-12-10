@@ -51,7 +51,7 @@ export default async function CustomersTable({
                       </div>
                     </div>
                     <div className="pt-4 text-sm">
-                      <p>{customer.total_invoices} 张发票</p>
+                      <p>{customer.total_invoices} 张开支</p>
                     </div>
                   </div>
                 ))}
@@ -66,7 +66,7 @@ export default async function CustomersTable({
                       邮箱
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      发票总数
+                      开支总数
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
                       待处理总额

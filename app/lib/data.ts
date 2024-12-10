@@ -6,8 +6,12 @@ import {
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
+  Device,
 } from './definitions';
 import { formatCurrency } from './utils';
+import { SettingField } from './definitions';
+import { auth } from '@/auth';
+import { getCurrentUserId } from './auth';
 
 export async function fetchRevenue() {
   try {
@@ -17,7 +21,10 @@ export async function fetchRevenue() {
     // console.log('Fetching revenue data...');
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
+    const data = await sql<Revenue>`
+      SELECT * FROM revenue
+      WHERE user_id = ${await getCurrentUserId()}
+    `;
 
     // console.log('Data fetch completed after 3 seconds.');
 
@@ -30,10 +37,12 @@ export async function fetchRevenue() {
 
 export async function fetchLatestInvoices() {
   try {
+    const userId = await getCurrentUserId();
     const data = await sql<LatestInvoiceRaw>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
+      WHERE invoices.user_id = ${userId}
       ORDER BY invoices.date DESC
       LIMIT 5`;
 
@@ -53,12 +62,13 @@ export async function fetchCardData() {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
+    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices WHERE user_id = ${await getCurrentUserId()}`;
+    const customerCountPromise = sql`SELECT COUNT(*) FROM customers WHERE user_id = ${await getCurrentUserId()}`;
     const invoiceStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
+         FROM invoices
+         WHERE user_id = ${await getCurrentUserId()}`;
 
     const data = await Promise.all([
       invoiceCountPromise,
@@ -103,11 +113,12 @@ export async function fetchFilteredInvoices(
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
+        invoices.user_id = ${await getCurrentUserId()} AND
+        (customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
         invoices.amount::text ILIKE ${`%${query}%`} OR
         invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
+        invoices.status ILIKE ${`%${query}%`})
       ORDER BY invoices.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
@@ -125,11 +136,12 @@ export async function fetchInvoicesPages(query: string) {
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
     WHERE
-      customers.name ILIKE ${`%${query}%`} OR
+      invoices.user_id = ${await getCurrentUserId()} AND
+      (customers.name ILIKE ${`%${query}%`} OR
       customers.email ILIKE ${`%${query}%`} OR
       invoices.amount::text ILIKE ${`%${query}%`} OR
       invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
+      invoices.status ILIKE ${`%${query}%`})
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
@@ -149,7 +161,7 @@ export async function fetchInvoiceById(id: string) {
         invoices.amount,
         invoices.status
       FROM invoices
-      WHERE invoices.id = ${id};
+      WHERE invoices.id = ${id} AND invoices.user_id = ${await getCurrentUserId()};
     `;
 
     const invoice = data.rows.map((invoice) => ({
@@ -172,6 +184,7 @@ export async function fetchCustomers() {
         id,
         name
       FROM customers
+      WHERE user_id = ${await getCurrentUserId()}
       ORDER BY name ASC
     `;
 
@@ -197,8 +210,9 @@ export async function fetchFilteredCustomers(query: string) {
 		FROM customers
 		LEFT JOIN invoices ON customers.id = invoices.customer_id
 		WHERE
-		  customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`}
+      customers.user_id = ${await getCurrentUserId()} AND
+		  (customers.name ILIKE ${`%${query}%`} OR
+      customers.email ILIKE ${`%${query}%`})
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
 	  `;
@@ -213,5 +227,91 @@ export async function fetchFilteredCustomers(query: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
+  }
+}
+
+// Fetch user settings from the database
+export async function fetchUserSettings() {
+  try {
+    const data = await sql<SettingField>`
+      SELECT id, name, email, password
+      FROM users
+      WHERE id = ${await getCurrentUserId()}
+    `;
+
+    const userSettings = data.rows[0];
+    return userSettings;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user settings.');
+  }
+}
+
+// Update user settings in the database
+export async function updateUserSettings(settings: Partial<SettingField>): Promise<void> {
+  try {
+    const { name, email, password } = settings;
+
+    await sql`
+      UPDATE users
+      SET
+        name = ${name},
+        email = ${email},
+        password = ${password}
+      WHERE id = ${await getCurrentUserId()}
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to update user settings.');
+  }
+}
+
+// Fetch devices for a user
+export async function fetchDevices(userId: string) {
+  try {
+    const data = await sql<Device>`
+      SELECT id, user_id, device_name, last_login
+      FROM devices
+      WHERE user_id = ${userId}
+    `;
+
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch devices.');
+  }
+}
+
+// Add a new device for a user
+export async function addDevice(userId: string, deviceName: string) {
+  try {
+    await sql`
+      INSERT INTO devices (user_id, device_name, last_login)
+      VALUES (${userId}, ${deviceName}, NOW())
+    `;
+
+    return { success: true };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to add device.');
+  }
+}
+
+// Create devices table if it doesn't exist
+export async function createDevicesTable() {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS devices (
+        id SERIAL PRIMARY KEY,
+        user_id UUID NOT NULL,
+        device_name TEXT NOT NULL,
+        last_login TIMESTAMP NOT NULL
+      )
+    `;
+
+    return { success: true };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to create devices table.');
   }
 }
