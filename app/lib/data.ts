@@ -315,3 +315,37 @@ export async function createDevicesTable() {
     throw new Error('Failed to create devices table.');
   }
 }
+
+export async function fetchCustomerById(id: string) {
+  try {
+    const data = await sql<CustomerField>`
+      SELECT id, name, email, image_url
+      FROM customers
+      WHERE id = ${id} AND user_id = ${await getCurrentUserId()}
+    `;
+
+    const customer = data.rows[0];
+    return customer;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customer.');
+  }
+}
+
+export async function fetchCustomerStats(id: string) {
+  try {
+    const data = await sql`
+      SELECT
+        COUNT(*) AS total_orders,
+        SUM(amount) AS total_spend
+      FROM invoices
+      WHERE customer_id = ${id} AND user_id = ${await getCurrentUserId()}
+    `;
+
+    const stats = data.rows[0];
+    return stats;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customer stats.');
+  }
+}

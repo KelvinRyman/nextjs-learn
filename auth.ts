@@ -3,7 +3,6 @@ import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import { sql } from '@vercel/postgres';
 import { z } from 'zod';
-import { headers } from 'next/headers';
 import type { User } from '@/app/lib/definitions';
 import { authConfig } from './auth.config';
 
@@ -21,24 +20,16 @@ export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   callbacks: {
     async session({ session, token }) {
-      const headersList = await headers();
-
-      if (session?.user) {
-        session.user.id = token.sub as string;
-        session.user.name = token.name as string;
-        session.user.email = token.email as string;
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub,
+          // 添加其他需要的用户信息
+          name: token.name,
+          email: token.email
+        }
       }
-      return session;
-      // return {
-      //   ...session,
-      //   user: {
-      //     ...session.user,
-      //     id: token.sub,
-      //     // 添加其他需要的用户信息
-      //     name: token.name,
-      //     email: token.email
-      //   }
-      // }
     },
     async jwt({ token, user }) {
       if (user) {
