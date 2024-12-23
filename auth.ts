@@ -25,7 +25,6 @@ export const { auth, signIn, signOut } = NextAuth({
         user: {
           ...session.user,
           id: token.sub,
-          // 添加其他需要的用户信息
           name: token.name,
           email: token.email
         }

@@ -3,6 +3,8 @@ import Form from '@/app/ui/customers/create-form';
 import Breadcrumbs from '@/app/ui/customers/breadcrumbs';
 import { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Create Customer',
 };

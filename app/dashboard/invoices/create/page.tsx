@@ -2,6 +2,13 @@ import { fetchCustomers } from '@/app/lib/data';
 import Form from '@/app/ui/invoices/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { Metadata } from 'next';
+import { NextConfig } from 'next';
+
+export const dynamic = 'force-dynamic';
+
+const config: NextConfig = {
+  output: 'standalone',
+};
 
 export const metadata: Metadata = {
   title: 'Create Invoice',

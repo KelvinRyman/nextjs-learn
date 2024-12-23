@@ -17,7 +17,6 @@ export default function OCRTest() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // 验证文件类型
     if (!file.type.startsWith('image/')) {
       setError('请上传图片文件');
       return;
