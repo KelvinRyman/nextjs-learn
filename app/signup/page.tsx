@@ -1,5 +1,10 @@
 import FimaLogo from '@/app/ui/fima-logo';
 import SignupForm from '@/app/ui/signup-form';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '注册'
+};
 
 export default function SignupPage() {
   return (

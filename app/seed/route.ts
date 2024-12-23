@@ -39,6 +39,7 @@ async function seedInvoices() {
       amount INT NOT NULL,
       status VARCHAR(255) NOT NULL,
       date DATE NOT NULL,
+      notes TEXT,
       user_id UUID NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users (id)
     );
@@ -108,10 +109,22 @@ async function seedRevenue() {
 }
 
 export async function GET() {
-  return Response.json({
-    message:
-      'Uncomment this file and remove this line. You can delete this file when you are finished.',
-  });
+  // return Response.json({
+  //   message:
+  //     'Uncomment this file and remove this line. You can delete this file when you are finished.',
+  // });
+
+  /* 清除数据库 */
+  // try {
+  //   await client.sql`BEGIN`;
+  //   await clearDatabase();
+  //   await client.sql`COMMIT`;
+
+  //   return Response.json({ message: 'Table dropped successfully' });
+  // } catch (error) {
+  //   await client.sql`ROLLBACK`;
+  //   return Response.json({ error }, { status: 500 });
+  // }
 
   /* 种子数据 */
   // try {
@@ -128,37 +141,25 @@ export async function GET() {
   //   return Response.json({ error }, { status: 500 });
   // }
 
-  /* 清除数据库 */
-  // try {
-  //   await client.sql`BEGIN`;
-  //   await clearDatabase();
-  //   await client.sql`COMMIT`;
-
-  //   return Response.json({ message: 'Table dropped successfully' });
-  // } catch (error) {
-  //   await client.sql`ROLLBACK`;
-  //   return Response.json({ error }, { status: 500 });
-  // }
-
   /* 查询所有用户 */
-  // try {
-  //   await client.sql`BEGIN`;
+  try {
+    await client.sql`BEGIN`;
 
-  //   const users = await getAllUser();
-  //   console.log(users); // 打印所有用户
+    const users = await getAllCustomers();
+    console.log(users); // 打印所有用户
 
-  //   await client.sql`COMMIT`;
+    await client.sql`COMMIT`;
 
-  //   return new Response(JSON.stringify(users), {
-  //     headers: { 'Content-Type': 'application/json' }
-  //   });
-  // } catch (error) {
-  //   await client.sql`ROLLBACK`;
-  //   return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-  //     status: 500,
-  //     headers: { 'Content-Type': 'application/json' }
-  //   });
-  // }
+    return new Response(JSON.stringify(users), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    await client.sql`ROLLBACK`;
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
   /* 查询所有表 */
   // try {
@@ -176,6 +177,17 @@ export async function GET() {
   //     headers: { 'Content-Type': 'application/json' }
   //   });
   // }
+
+  /* 添加新列 */
+  // try {
+  //   await client.sql`BEGIN`;
+  //   await addColumnToTable();
+  //   await client.sql`COMMIT`;
+  //   return Response.json({ message: 'Column added successfully' });
+  // } catch (error) {
+  //   await client.sql`ROLLBACK`;
+  //   return Response.json({ error }, { status: 500 });
+  // }
 }
 
 async function clearDatabase() {
@@ -185,8 +197,8 @@ async function clearDatabase() {
   `;
 }
 
-async function getAllUser() {
-  const result = await client.sql`SELECT * FROM users`;
+async function getAllCustomers() {
+  const result = await client.sql`SELECT * FROM customers`;
   return result.rows;
 }
 
@@ -198,4 +210,11 @@ async function getAllTable() {
     ORDER BY table_name;
   `;
   return result.rows;
+}
+
+async function addColumnToTable() {
+  await client.sql`
+    ALTER TABLE invoices
+    ADD COLUMN IF NOT EXISTS notes TEXT;
+  `;
 }

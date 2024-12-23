@@ -2,6 +2,7 @@
 
 import { register } from '@/app/lib/actions';
 import { lusitana } from '@/app/ui/fonts';
+import Link from 'next/link';
 import {
   UserIcon,
   AtSymbolIcon,
@@ -32,7 +33,7 @@ export default function SignupForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="name"
             >
-              用户名/Name
+              用户名 / Name
             </label>
             <div className="relative">
               <input
@@ -51,7 +52,7 @@ export default function SignupForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="email"
             >
-              邮箱/Email
+              邮箱 / Email
             </label>
             <div className="relative">
               <input
@@ -70,7 +71,7 @@ export default function SignupForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="password"
             >
-              密码/Password
+              密码 / Password
             </label>
             <div className="relative">
               <input
@@ -90,7 +91,7 @@ export default function SignupForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="confirm-password"
             >
-              确认密码/Confirm Password
+              确认密码 / Confirm Password
             </label>
             <div className="relative">
               <input
@@ -106,11 +107,8 @@ export default function SignupForm() {
             </div>
           </div>
         </div>
-        <Button className="mt-4 w-full" aria-disabled={isPending}>
-          注册 <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
         <div
-          className="flex h-8 items-end space-x-1"
+          className="flex h-6 items-end space-x-1"
           aria-live="polite"
           aria-atomic="true"
         >
@@ -121,6 +119,14 @@ export default function SignupForm() {
             </>
           ) : null}
         </div>
+        <Button className="mt-4 w-full" aria-disabled={isPending}>
+          注册 <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
+        <Link href="/login">
+          <Button className="mt-4 w-full bg-gray-300 hover:bg-gray-400">
+            返回登录 <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
+        </Link>
       </div>
     </form>
   );

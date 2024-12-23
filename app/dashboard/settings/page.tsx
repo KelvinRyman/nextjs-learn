@@ -19,17 +19,25 @@ export default async function Page() {
       <div className="mt-4 flex flex-col gap-8 md:mt-8">
         <div className="p-4 border rounded-lg">
           <h2 className="text-lg font-semibold mb-4">用户</h2>
-          <SettingForm label="设置用户名" />
-          <SettingForm label="设置新邮箱" />
+          <SettingForm 
+            label="设置用户名" 
+            type="username" 
+            placeholder="输入新的用户名"
+          />
+          <SettingForm 
+            label="设置新邮箱" 
+            type="email" 
+            placeholder="输入新的邮箱地址"
+          />
         </div>
         <div className="p-4 border rounded-lg">
           <h2 className="text-lg font-semibold mb-4">安全</h2>
-          <SettingForm label="输入旧密码" />
-          <SettingForm label="设置新密码" />
+          <SettingForm 
+            label="修改密码" 
+            type="password" 
+            placeholder="输入新密码"
+          />
         </div>
-        {/* {section === 'devices' && (
-          <DeviceManagement userId={userSettings.id} />
-        )} */}
       </div>
     </main>
   );

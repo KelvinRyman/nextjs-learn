@@ -11,7 +11,7 @@ const config: NextConfig = {
 };
 
 export const metadata: Metadata = {
-  title: 'Create Invoice',
+  title: '创建开支',
 };
 
 export default async function Page() {

@@ -1,5 +1,10 @@
 import FimaLogo from '@/app/ui/fima-logo';
 import LoginForm from '@/app/ui/login-form';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '登录'
+};
 
 export default function LoginPage() {
   return (

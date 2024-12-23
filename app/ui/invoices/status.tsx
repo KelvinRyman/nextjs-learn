@@ -9,18 +9,25 @@ export default function InvoiceStatus({ status }: { status: string }) {
         {
           'bg-gray-100 text-gray-500': status === 'pending',
           'bg-green-500 text-white': status === 'paid',
+          'bg-blue-500 text-white': status === 'income',
         },
       )}
     >
       {status === 'pending' ? (
         <>
-          Pending
+          处理中
           <ClockIcon className="ml-1 w-4 text-gray-500" />
         </>
       ) : null}
       {status === 'paid' ? (
         <>
-          Paid
+          已支付
+          <CheckIcon className="ml-1 w-4 text-white" />
+        </>
+      ) : null}
+      {status === 'income' ? (
+        <>
+          收入
           <CheckIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}

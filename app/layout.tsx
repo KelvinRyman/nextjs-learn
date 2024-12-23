@@ -4,10 +4,10 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Fima Dashboard',
-    default: 'Fima Dashboard',
+    template: '%s | Fima 仪表板',
+    default: 'Fima 仪表板',
   },
-  description: 'The official Next.js Learn Dashboard built with App Router.',
+  description: 'Fima 仪表板',
   metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
 };
 export default function RootLayout({

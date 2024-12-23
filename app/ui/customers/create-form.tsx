@@ -73,14 +73,13 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           <label htmlFor="image_url" className="mb-2 block text-sm font-medium">
             对象头像
           </label>
-          <div className="relative flex justify-center items-center text-cent">
+          <div className="relative">
             <input
               id="image_url"
               name="image_url"
               type="file"
               accept="image/*"
-              // onChange={handleImageUpload}
-              className="block w-full px-8 py-4 rounded-md border border-gray-200 text-sm outline-2 placeholder:text-gray-500 file:mx-auto file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer"
+              className="peer block w-full rounded-md border border-gray-200 py-2 px-4 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="image_url-error"
             />
           </div>

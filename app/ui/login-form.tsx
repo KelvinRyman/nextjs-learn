@@ -30,7 +30,7 @@ export default function LoginForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="email"
             >
-              邮箱/Email
+              邮箱 / Email
             </label>
             <div className="relative">
               <input
@@ -49,7 +49,7 @@ export default function LoginForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="password"
             >
-              密码/Password
+              密码 / Password
             </label>
             <div className="relative">
               <input
@@ -66,7 +66,7 @@ export default function LoginForm() {
           </div>
         </div>
         <div
-          className="flex h-8 items-end space-x-1"
+          className="flex h-6 items-end space-x-1"
           aria-live="polite"
           aria-atomic="true"
         >
